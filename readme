@@ -1,0 +1,48 @@
+README.md
+# Data Analysis: MrBeast YouTube Channel
+
+## Project Overview
+This is a sample data analysis project created for portfolio purposes.
+The project analyzes the MrBeast YouTube channel to understand video performance
+and audience engagement patterns.
+
+## Business Questions
+- Which videos receive the highest views?
+- Does video duration affect engagement?
+- Which days of the week perform best?
+- How do likes and comments relate to views?
+
+## Dataset
+- Source: Public Kaggle dataset
+- Records: 900+ YouTube videos
+- This project is for learning and demonstration purposes only
+
+## Tools Used
+- Python
+- Pandas
+- Matplotlib & Seaborn
+- Jupyter Notebook
+
+## Analysis Performed
+- Data cleaning and handling missing values
+- Feature creation (duration, engagement metrics)
+- Exploratory Data Analysis (EDA)
+- Visualization of views, likes, and comments
+- Time-based analysis (monthly and weekday trends)
+
+## Key Insights
+- A small number of videos generate extremely high views
+- Video length alone does not guarantee higher engagement
+- Engagement varies by publishing day
+
+## Files in This Repository
+- `Mr Beast YT data.csv` – Original dataset
+- `MrBeast_YT_Cleaned.csv` – Cleaned dataset
+- `.png` files – Visualizations created during analysis
+
+## Author
+Saima Hassan  
+Aspiring Data Analyst
+Commit changes
+# Data Analysis Project
+
