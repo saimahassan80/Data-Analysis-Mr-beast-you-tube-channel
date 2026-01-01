@@ -1,0 +1,17 @@
+02-exploratory-analysis.ipynb — EDA
+
+1. Load processed data
+2. Summary statistics (median, mean, quantiles)
+3. Distributions and outliers
+   - histogram of views, log-transformed histogram
+4. Top videos
+   - table of top 10 by views (save as outputs/figures/top10_table.png or markdown)
+5. Time series
+   - aggregate by month/year: median views per month, total views per month
+   - line plot: views over time
+6. Correlations
+   - correlation heatmap between numeric features (views, likes, comments, duration, title_length)
+7. Text analysis
+   - most common words in titles (wordcloud)
+   - tags frequency
+8. Save plots to outputs/figures
