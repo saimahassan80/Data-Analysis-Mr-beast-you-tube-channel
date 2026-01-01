@@ -1,26 +1,135 @@
-# 01-data-cleaning.ipynb — Data cleaning
+```markdown
+# 01-data-cleaning.ipynb — Data cleaning (cell-by-cell content)
 
-1. Setup
-   - imports (pandas, numpy, matplotlib/seaborn, pathlib)
-   - set working directory (Path(...))
-   - load raw CSV(s)
+This file contains the exact cells you can copy‑paste into a new Jupyter/Colab notebook. Replace the RAW path or COLLECTION_DATE values if your filenames/dates differ.
 
-2. Inspect raw data
-   - df.head(), df.info(), df.describe()
-   - value counts for categorical columns
-   - check missing values: df.isna().sum()
+---
 
-3. Cleaning steps
-   - drop duplicates: df.drop_duplicates(subset='video_id', inplace=True)
-   - parse dates: df['publish_date'] = pd.to_datetime(df['publish_date'])
-   - convert numeric columns: df['views'] = pd.to_numeric(...)
-   - fill missing comments with 0, or impute where appropriate
+Markdown cell (Title)
+# 01 — Data cleaning
+*Load raw data, inspect, clean, feature-engineer, and save processed CSV.*
 
-4. Feature engineering
-   - df['days_since_upload'] = (today - publish_date).dt.days
-   - df['view_rate'] = df['views'] / df['days_since_upload']
-   - df['title_length'] = df['title'].str.len()
-   - extract publish month/year/day_of_week
+---
 
-5. Save processed data
-   - df.to_csv('data/processed/videos_clean.csv', index=False)
+Code cell (Imports & paths)
+```python
+# Imports & paths — edit RAW if your raw file has a different name
+import pandas as pd
+from pathlib import Path
+import numpy as np
+
+RAW = Path("data/raw/videos.csv")   # <<-- change if needed
+OUTDIR = Path("data/processed")
+OUTDIR.mkdir(parents=True, exist_ok=True)
+
+COLLECTION_DATE = pd.to_datetime("2026-01-01")  # <<-- change to your data collection date
+```
+
+Markdown cell (Inspect)
+## Inspect raw data
+
+---
+
+Code cell (Load & quick inspection)
+```python
+# Load (adjust if CSV has different delimiter or encoding)
+df = pd.read_csv(RAW)
+print("shape:", df.shape)
+display(df.head())
+display(df.info())
+display(df.describe(include="all").T)
+```
+
+Markdown cell (Cleaning plan)
+## Cleaning steps
+- Drop duplicates
+- Parse dates
+- Convert numeric fields
+- Handle missing values
+- Feature engineering (days_since_upload, view_rate, title_length)
+
+---
+
+Code cell (Cleaning)
+```python
+# Drop duplicates
+if "video_id" in df.columns:
+    df = df.drop_duplicates(subset="video_id")
+else:
+    df = df.drop_duplicates()
+
+# Parse publish_date safely
+if "publish_date" in df.columns:
+    df['publish_date'] = pd.to_datetime(df['publish_date'], errors='coerce')
+
+# Numeric conversions
+for col in ['views','likes','comments','duration']:
+    if col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# Fill / handle missing values
+if 'comments' in df.columns:
+    df['comments'] = df['comments'].fillna(0).astype(int)
+
+# If views missing, fill with 0 (or drop — choose per your judgement)
+if 'views' in df.columns:
+    df['views'] = df['views'].fillna(0).astype(int)
+```
+
+Markdown cell (Feature engineering)
+## Feature engineering
+
+---
+
+Code cell (Features)
+```python
+# Use COLLECTION_DATE or pd.Timestamp.today()
+today = COLLECTION_DATE
+
+# days since upload (ensure publish_date exists)
+if 'publish_date' in df.columns:
+    df['days_since_upload'] = (today - df['publish_date']).dt.days.clip(lower=1)
+else:
+    df['days_since_upload'] = np.nan
+
+# view rate and title length
+if 'views' in df.columns:
+    df['view_rate'] = df['views'] / df['days_since_upload']
+
+df['title'] = df['title'].astype(str) if 'title' in df.columns else df.get('title', '').astype(str)
+df['title_length'] = df['title'].str.len()
+
+# extract time parts
+if 'publish_date' in df.columns:
+    df['upload_year'] = df['publish_date'].dt.year
+    df['upload_month'] = df['publish_date'].dt.to_period('M')
+    df['upload_dayofweek'] = df['publish_date'].dt.day_name()
+```
+
+Markdown cell (Save processed)
+## Save cleaned data
+
+---
+
+Code cell (Save)
+```python
+OUT_FILE = OUTDIR / "videos_clean.csv"
+df.to_csv(OUT_FILE, index=False)
+print("Saved processed file to:", OUT_FILE)
+```
+
+Markdown cell (Sanity checks)
+## Sanity checks & next
+- Display a few rows of processed data.
+- Verify types and missing values.
+- Then proceed to EDA notebook (02).
+
+---
+
+Code cell (Final checks)
+```python
+display(df.head())
+print(df.dtypes)
+print("Missing per column:\\n", df.isna().sum())
+```
+```
