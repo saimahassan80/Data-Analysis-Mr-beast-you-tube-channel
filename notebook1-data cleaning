@@ -1,1 +1,26 @@
+# 01-data-cleaning.ipynb — Data cleaning
 
+1. Setup
+   - imports (pandas, numpy, matplotlib/seaborn, pathlib)
+   - set working directory (Path(...))
+   - load raw CSV(s)
+
+2. Inspect raw data
+   - df.head(), df.info(), df.describe()
+   - value counts for categorical columns
+   - check missing values: df.isna().sum()
+
+3. Cleaning steps
+   - drop duplicates: df.drop_duplicates(subset='video_id', inplace=True)
+   - parse dates: df['publish_date'] = pd.to_datetime(df['publish_date'])
+   - convert numeric columns: df['views'] = pd.to_numeric(...)
+   - fill missing comments with 0, or impute where appropriate
+
+4. Feature engineering
+   - df['days_since_upload'] = (today - publish_date).dt.days
+   - df['view_rate'] = df['views'] / df['days_since_upload']
+   - df['title_length'] = df['title'].str.len()
+   - extract publish month/year/day_of_week
+
+5. Save processed data
+   - df.to_csv('data/processed/videos_clean.csv', index=False)
